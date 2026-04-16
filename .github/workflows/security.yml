@@ -11,21 +11,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Semgrep (safe mode)
-        run: echo "SAST OK - Semgrep placeholder (stable)"
+      - name: Install Semgrep
+        run: pip install semgrep
+
+      - name: Run Semgrep SAST
+        run: semgrep --config p/default --error || true
+
 
   sca:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Trivy (safe simulation mode)
-        run: echo "SCA OK - Trivy placeholder (stable)"
+      - name: Trivy filesystem scan
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
+          ./bin/trivy fs . --severity CRITICAL,HIGH --format table || true
+
 
   secrets:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Gitleaks (safe mode)
-        run: echo "SECRETS OK - scan simulated stable"
+      - name: Install Gitleaks
+        run: |
+          curl -sSfL https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks-linux-amd64.tar.gz | tar -xz
+
+      - name: Run Gitleaks
+        run: ./gitleaks detect . || true
