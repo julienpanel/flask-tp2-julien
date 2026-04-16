@@ -7,12 +7,14 @@ on:
 jobs:
 
   sast:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: SAST test
-        run: echo "SAST OK"
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v4
 
+    - name: Run Semgrep
+      uses: returntocorp/semgrep-action@v1
+      with:
+        config: auto
   sca:
     runs-on: ubuntu-latest
     steps:
