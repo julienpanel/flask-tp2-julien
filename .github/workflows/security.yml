@@ -11,11 +11,11 @@ jobs:
   steps:
     - uses: actions/checkout@v4
 
-    - name: Run Semgrep (safe mode)
-      uses: returntocorp/semgrep-action@v1
-      with:
-        config: p/default
-      continue-on-error: true
+    - name: Install Semgrep
+      run: pip install semgrep
+
+    - name: Run Semgrep scan
+      run: semgrep --config p/default || true
 
   sca:
     runs-on: ubuntu-latest
