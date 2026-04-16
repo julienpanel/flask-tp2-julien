@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Trivy filesystem scan
+      - name: Trivy FS scan
         run: |
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
           ./bin/trivy fs . --severity CRITICAL,HIGH --format table || true
@@ -38,5 +38,5 @@ jobs:
         run: |
           curl -sSfL https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks-linux-amd64.tar.gz | tar -xz
 
-      - name: Run Gitleaks
+      - name: Run Gitleaks (non-blocking)
         run: ./gitleaks detect . || true
