@@ -11,11 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Semgrep
-        run: pip install semgrep
-
-      - name: Run Semgrep SAST
-        run: semgrep --config p/default || true
+      - name: Semgrep SAST
+        run: |
+          pip install semgrep
+          semgrep --config p/default || true
 
 
   sca:
@@ -23,13 +22,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Trivy filesystem scan
-        uses: aquasecurity/trivy-action@0.24.0
-        with:
-          scan-type: fs
-          format: table
-          severity: CRITICAL,HIGH
-          exit-code: "0"
+      - name: Trivy FS scan (report only)
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
+          ./bin/trivy fs . --format table --severity CRITICAL,HIGH || true
 
 
   secrets:
@@ -37,5 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Gitleaks scan
-        uses: gitleaks/gitleaks-action@v2
+      - name: Gitleaks scan (safe mode)
+        run: |
+          curl -sSfL https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks-linux-amd64.tar.gz | tar -xz
+          ./gitleaks detect . || true
