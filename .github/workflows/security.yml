@@ -6,29 +6,32 @@ on:
 
 jobs:
 
-   sast:
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
+  sast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-    - name: Install Semgrep
-      run: pip install semgrep
-
-    - name: Run Semgrep scan
-      run: semgrep --config p/default || true
+      - name: Semgrep scan
+        run: |
+          pip install semgrep
+          semgrep --config p/default || true
 
   sca:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: SCA Trivy
-        run: echo "SCA OK"
+      - name: Trivy FS scan
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          scan-type: fs
+          severity: CRITICAL,HIGH
+          exit-code: "0"
 
   secrets:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Gitleaks
-        run: echo "SECRETS OK"
+      - name: Gitleaks scan
+        uses: gitleaks/gitleaks-action@v2
