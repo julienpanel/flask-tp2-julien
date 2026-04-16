@@ -11,10 +11,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Semgrep SAST
-        run: |
-          pip install semgrep
-          semgrep --config p/default || true
+      - name: Install Semgrep
+        run: pip install semgrep
+
+      - name: Run Semgrep SAST
+        run: semgrep --config p/default || true
+
 
   sca:
     runs-on: ubuntu-latest
@@ -25,10 +27,10 @@ jobs:
         uses: aquasecurity/trivy-action@0.24.0
         with:
           scan-type: fs
-          format: json
-          output: trivy_fs.json
+          format: table
           severity: CRITICAL,HIGH
           exit-code: "0"
+
 
   secrets:
     runs-on: ubuntu-latest
